@@ -1,13 +1,13 @@
 <div class='mt-4'>
-    <h3>Khóa Học Của Tôi</h3>
-    <a href='/me/trash/courses/'>Thùng Rác</a>
+    <h3>Thùng Rác Của Tôi</h3>
+    <a href='/me/stored/courses/'>Quay lại</a>
     <table class='table mt-4'>
         <thead>
             <tr>
                 <th scope='col'>#</th>
                 <th scope='col'>Tên Khóa Học</th>
                 <th scope='col'>Trình Độ</th>
-                <th scope='col'>Thời Gian Tạo</th>
+                <th scope='col'>Thời Gian Xóa</th>
                 <th scope='col'>#</th>
             </tr>
         </thead>
@@ -17,25 +17,22 @@
                     <th scope='row'>{{sum @index 1}}</th>
                     <td><a href='/courses/{{this.slug}}'>{{this.name}}</a></td>
                     <td>{{this.level}}</td>
-                    <td>{{this.createdAt}}</td>
+                    <td>{{this.deletedAt}}</td>
                     <td>
-                        <a href='/courses/edit/{{this._id}}' class='btn btn-info'>Sửa</a>
+                        <a href='' class='btn btn-info btn-restore' data-idrestore="{{this._id}}">Restore</a>
                         {{!-- <a href='/{{this._id}}?_method=DELETE' class='btn btn-link'>Xóa</a> --}}
                         <a
                             href=''
                             class='btn btn-danger'
                             data-toggle='modal'
                             data-target='#delete-course-modal'
-                            data-id={{this._id}}
-                        >Xóa</a>
+                            data-idforcedelete={{this._id}}
+                        >Xóa Vĩnh Viễn</a>
 
                     </td>
                 </tr>
             {{else}}
-               <tr><td colspan="5" class="text-center">Bạn chưa đăng khóa học nào. 
-                <a href="/courses/create">Đăng Khóa Học</a>
-                </td></tr> 
-
+               <tr><td colspan="5" class="text-center">Thùng rác trống.</td></tr> 
             {{/each}}
         </tbody>
     </table>
@@ -54,33 +51,48 @@
                 <p>Bạn chắc chắn xóa khóa học này?</p>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-danger' id='btn-delete-course'>Xóa</button>
+                <button type='button' class='btn btn-danger' id='btn-forcedelete'>Xóa</button>
                 <button type='button' class='btn btn-secondary' data-dismiss='modal'>Hủy</button>
             </div>
         </div>
     </div>
 </div>
 {{!-- Delete hidden form --}}
-<form name="deleteCourseForm" id="courseFormId" method="POST"></form>
+<form name="force-delete-course-form" method="POST"></form>
+<form name="restore-course-form" method="POST"></form>
 {{!-- script --}}
 <script type='text/javascript'>
     document.addEventListener('DOMContentLoaded', function () {
     var course_id;
-    var courseForm = document.forms.namedItem('deleteCourseForm');
-    var btnDeleteCourse = document.getElementById('btn-delete-course');
+    // get form
+    var restoreForm = document.forms.namedItem('restore-course-form');
+    var forcedeleteForm = document.forms.namedItem('force-delete-course-form');
+    // get btn event
+    var btnDeleteConfirm = document.getElementById('btn-forcedelete');
+    var btnRestore = $('.btn-restore');
     //console.log(courseForm);
     // When dialog confirm clicked
     $('#delete-course-modal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        //var recipient_id = button.data('id');
+        var button = $(event.relatedTarget);        
         //console.log('_ID:', recipient_id);
-        course_id = button.data('id');
+        course_id = button.data('idforcedelete');
     });
     // When delete course btn clicked
-    btnDeleteCourse.onclick = function () {
-        courseForm.action = '/courses/'+course_id+'?_method=DELETE';        
+    btnDeleteConfirm.onclick = function () {
+        forcedeleteForm.action = '/courses/'+course_id+'/force?_method=DELETE';  
+        console.log('force delete', course_id);
         //alert('open code submit, click xác nhận xóa');
-        courseForm.submit();
-    }; 
+        forcedeleteForm.submit();
+    };
+    // click restore
+    btnRestore.click(function(e){
+        e.preventDefault(); // dừng hành động href='' lại (ko reload page)
+                
+        courseId = $(this).data('idrestore');
+        //console.log('restore', courseId);
+        restoreForm.action = '/courses/'+courseId+'/restore?_method=PATCH';
+        restoreForm.submit();
+    });    
+
 });
 </script>

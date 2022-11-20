@@ -45,13 +45,30 @@ class CourseController {
             .then(() => res.redirect('/me/stored/courses'))
             .catch(next);
     }
+    // [PATCH] /courses/:id
+    restore(req, res, next) {
+        console.log('--RESTORE--', req.params);
+        Course.restore({ _id: req.params.id })
+            .then(() => res.redirect('/me/stored/courses'))
+            .catch(next);
+    }
     // [DELETE] /courses/:id
     destroy(req, res, next) {
         console.log('--DELETE--', req.params);
+        // Course.deleteOne({ _id: req.params.id })
+        // soft delete
+        Course.delete({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+    // [FORCE DELETE] /courses/:id/force
+    forceDestroy(req, res, next) {
+        console.log('--FORCE DELETE--', req.params);        
         Course.deleteOne({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
     }
+    
 
     // GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
 }
