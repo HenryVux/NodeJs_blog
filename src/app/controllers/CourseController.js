@@ -68,9 +68,27 @@ class CourseController {
             .then(() => res.redirect('back'))
             .catch(next);
     }
-    
 
     // GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
+
+    handleAction(req, res, next) {
+        // res.json(req.body);
+        console.log("-- handleAction:",req.body["action"], req.body["courseIds"]);
+        switch (req.body.action) {
+            case 'delete':
+                // delete array - read mongoose
+                Course.delete({ _id: {$in: req.body.courseIds} }) 
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            default:
+                // res.json({message: 'action is invalid'});
+                res.render('error');
+                break;
+        }
+        // res.send('handleAction');
+        // res.redirect('/courses/formAction');
+    }
 }
 
 module.exports = new CourseController();

@@ -28,6 +28,10 @@ class SiteController {
             .catch(next);
     }
 
+    error(req, res) {
+        res.render('error');
+    }
+
     // [GET] /search
     search(req, res) {
         res.render('search');
