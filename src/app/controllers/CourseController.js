@@ -73,17 +73,30 @@ class CourseController {
 
     handleAction(req, res, next) {
         // res.json(req.body);
-        console.log("-- handleAction:",req.body["action"], req.body["courseIds"]);
-        switch (req.body.action) {
+        console.log("-- handleAction:",req.body);//req.body["action"], req.body["courseIds"], 
+        
+        switch (req.body.actionHandle) {
             case 'delete':
                 // delete array - read mongoose
                 Course.delete({ _id: {$in: req.body.courseIds} }) 
                     .then(() => res.redirect('back'))
                     .catch(next);
                 break;
+            case 'forcedelete-1':
+                // delete array - read mongoose
+                Course.deleteOne({ _id: {$in: req.body.courseIds} })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            case 'restore':
+                // delete array - read mongoose
+                Course.restore({ _id: {$in: req.body.courseIds} }) 
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
             default:
-                // res.json({message: 'action is invalid'});
-                res.render('error');
+                res.json({message: 'action is invalid'});
+                // res.render('error');
                 break;
         }
         // res.send('handleAction');
