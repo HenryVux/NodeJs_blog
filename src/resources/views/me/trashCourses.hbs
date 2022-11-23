@@ -49,7 +49,6 @@
                             data-target='#delete-course-modal'
                             data-idforcedelete={{this._id}}
                         >Xóa Vĩnh Viễn</a>
-
                     </td>
                 </tr>
             {{else}}
@@ -119,18 +118,12 @@
             $("#btnFormHandle").addClass("disabled");
     }
     //--- end ---
-    // submit button form checkAll
-    //console.log(formContainer);
+    // submit button form checkAll    
         
-    btnFormHandle.on("submit", function(e){
-    //$("#btnFormHandle").change(function(e){
-        e.preventDefault();
-        //var isSubmitable = $("btnFormHandle").hasClass('disabled');
-        //console.log(isSubmitable);
-        console.log('submit ne');
+    btnFormHandle.on("submit", function(e){    
+        e.preventDefault();    
     });
     //--- end ---
-    //console.log(courseForm);
     // When dialog confirm clicked
     $('#delete-course-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);        
@@ -146,8 +139,7 @@
     };
     // click restore
     btnRestore.click(function(e){
-        e.preventDefault(); // dừng hành động href='' lại (ko reload page)
-                
+        e.preventDefault(); // dừng hành động href='' lại (ko reload page)                
         courseId = $(this).data('idrestore');
         //console.log('restore', courseId);
         restoreForm.action = '/courses/'+courseId+'/restore?_method=PATCH';
