@@ -13,14 +13,15 @@ db.connect(); // db connect
 const app = express();
 const port = 3011;
 
+// use static folder
 app.use(express.static(path.join(__dirname, './public')));
 // express 4.6 - body-parser - json
-app.use(
+// submit từ form
+app.use(    
     express.urlencoded({
         extended: true,
     }),
 );
-
 // override with POST having ?_method=PUT
 app.use(methodOverride('_method'));
 // json
