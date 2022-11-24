@@ -10,7 +10,20 @@ class MeController {
     }
     // [GET] /me/stored/courses
     storedCourses(req, res, next) {
-        Promise.all([Course.find({}), Course.countDocumentsDeleted()])
+
+        let courseQuery = Course.find({});
+        console.log(req.query.column);
+        
+        if(req.query.hasOwnProperty('_sort')){
+            // res.json({message: 'sort ok'});
+            // return;
+            // courseQuery = courseQuery.sort({name: 'desc'});
+            courseQuery = courseQuery.sort({[req.query.column]: req.query.type});
+            
+        }
+
+        // Promise.all([Course.find({}), Course.countDocumentsDeleted()])
+        Promise.all([courseQuery, Course.countDocumentsDeleted()])
             .then(
                 (
                     [courses, deletedCount], // (result - promise return array)
