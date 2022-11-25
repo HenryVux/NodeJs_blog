@@ -1,7 +1,5 @@
 const Course = require('../models/Course');
 const { multipleMongooseToObject, mongooseToObject } = require('../../util/mongoose');
-const mongoose = require('../../util/mongoose');
-
 class MeController {
     // [GET] /me
     show(req, res) {
@@ -10,24 +8,21 @@ class MeController {
     }
     // [GET] /me/stored/courses
     storedCourses(req, res, next) {
-
+        // res.json(res.locals._sort);
         let courseQuery = Course.find({});
-        console.log(req.query.column);
-        
+        // console.log(req.query.column);        
+        // sort column
         if(req.query.hasOwnProperty('_sort')){
             // res.json({message: 'sort ok'});
             // return;
-            // courseQuery = courseQuery.sort({name: 'desc'});
-            courseQuery = courseQuery.sort({[req.query.column]: req.query.type});
-            
+            courseQuery = courseQuery.sort({name: 'desc'});
+            courseQuery = courseQuery.sort({[req.query.column]: req.query.type});            
         }
 
         // Promise.all([Course.find({}), Course.countDocumentsDeleted()])
-        Promise.all([courseQuery, Course.countDocumentsDeleted()])
-            .then(
-                (
-                    [courses, deletedCount], // (result - promise return array)
-                ) =>
+        Promise.all( [courseQuery, Course.countDocumentsDeleted()] )
+        // (result - promise return array)
+            .then(([courses, deletedCount]) =>
                     res.render('me/storedCourses', {
                         deletedCount, // inhert Object literal
                         courses: multipleMongooseToObject(courses),

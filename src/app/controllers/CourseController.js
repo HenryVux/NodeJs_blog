@@ -23,11 +23,13 @@ class CourseController {
         // console.log('--STORE--', req.body);
         const formData = req.body;
         formData.image = `https://img.youtube.com/vi/${formData.videoId}/sddefault.jpg`;
+        // formData._id = 1;// auto_increment : mongoose sequence github
         const course = new Course(formData);
         course
             .save()
-            .then(() => res.redirect('/'))
-            .catch((error) => {});
+            .then(() => res.redirect('/me/stored/courses'))
+            .catch(next);
+            // .catch((error) => {});
     }
     // [CRUD]
     // [GET] /courses/edit/:id

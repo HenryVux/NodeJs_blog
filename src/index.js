@@ -2,6 +2,9 @@ const path = require('path');
 const morgan = require('morgan');
 const express = require('express');
 const { create } = require('express-handlebars');
+// import midlewares
+const SortMidleware = require('./app/midlewares/SortMidleware');
+
 // hổ trợ PUT update form
 const methodOverride = require('method-override');
 // nạp route index
@@ -24,6 +27,8 @@ app.use(
 );
 // override with POST having ?_method=PUT
 app.use(methodOverride('_method'));
+// custom midlewares
+app.use(SortMidleware);
 // json
 app.use(express.json());
 
@@ -33,9 +38,29 @@ app.use(express.json());
 //template engine
 const hbs = create({
     extname: '.hbs',
-    helpers: {
+    helpers: {        
         sum: (a, b) => a + b,
         toancong: (x, y) => x + y,
+        sortable: (field, sort, demoUser = () => {}) => {
+            console.log('locals user:', demoUser);
+            const sortType = field === sort.column ? sort.type : 'default';
+            const icons = {
+                default: 'oi oi-elevator',
+                asc: 'oi oi-sort-ascending',
+                desc: 'oi oi-sort-descending'
+            };            
+            const types = {
+                default: 'desc',
+                desc:'asc',
+                asc:'desc'
+            }
+            const icon = icons[sortType];
+            const type = types[sortType];
+
+            return `<a href="?_sort&column=${field}&type=${type}">
+                        <span class="${icon}"></span>
+                    </a>`;
+        }
     },
 });
 app.engine('.hbs', hbs.engine);

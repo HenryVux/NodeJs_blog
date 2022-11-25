@@ -3,7 +3,7 @@ const router = express.Router();
 
 const courseController = require('../app/controllers/CourseController');
 
-router.get('/create', ()=>{} ,courseController.create); //
+router.get('/create', courseController.create); //
 router.post('/store', courseController.store);  // save
 router.post('/handle-form', courseController.handleAction); // handle Action Form
 router.get('/edit/:id', courseController.edit); // edit form - id

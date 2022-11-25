@@ -17,18 +17,23 @@
                 <button class="btn btn-primary btn-sm" id="checkAllBtn" disabled>Thực hiện</button>
             </div>
         </div>
-    </div>    
+    </div>
+    {{_sort.column}}
+    {{_thunghiemUser}}
     <table class='table mt-4'>
         <thead>
             <tr>                
-                <th scope='col'>#</th>
-                <th scope='col'>Tên Khóa Học
-                    <a href="?_sort&column=name&type=desc">
-                        <span class="oi oi-elevator"></span>
-                    </a>
+                <th scope='col'>#
+                    {{{sortable 'iid' _sort}}} 
                 </th>
-                <th scope='col'>Trình Độ</th>
-                <th scope='col'>Thời Gian Tạo</th>
+                <th scope='col'>Tên Khóa Học
+                    {{!-- helper trong index.js --}}
+                    {{!-- {{{sortable 'name' _sort _thunghiemUser}}}  --}}
+                    {{{sortable 'name' _sort}}} 
+                    
+                </th>
+                <th scope='col'>Trình Độ {{{sortable 'level' _sort}}} </th>
+                <th scope='col'>Thời Gian Tạo {{{sortable 'createdAt' _sort}}} </th>
                 <th scope='col'>#</th>
             </tr>
         </thead>
@@ -38,7 +43,8 @@
                     <th scope='row'>
                         <div class="col-auto">
                             <input type="checkbox" class="form-check-input" value="{{this._id}}" name="courseIds[]">
-                            {{sum @index 1}}
+                            {{!-- {{sum @index 1}} --}}
+                            {{this.iid}}
                         </div>
                     </th>                    
                     <td><a href='/courses/{{this.slug}}'>{{this.name}}</a></td>
