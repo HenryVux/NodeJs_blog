@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const slug = require('mongoose-slug-generator');
 var mongooseDelete = require('mongoose-delete');
+
+// auto_increment id
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+// paginate: phân trang
+// const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
@@ -29,14 +33,12 @@ const CourseSchema = new Schema(
 );
 // add plugin
 mongoose.plugin(slug);
-// CourseSchema.plugin(AutoIncrement, {inc_field: '_id'}, mongooseDelete, //{inc_field: '_id'} : default
+// CourseSchema.plugin(AutoIncrement, {inc_field: '_id'}); // default
 CourseSchema.plugin(AutoIncrement, {inc_field: 'iid'});
 CourseSchema.plugin(mongooseDelete, 
     { 
         deletedAt : true ,  
-        overrideMethods: 'all',
-    });
-
-
-
-module.exports = new mongoose.model('Course', CourseSchema);
+        overrideMethods: ['all', 'countDocuments']
+    });    
+const modelCourse = new mongoose.model('Course', CourseSchema);
+module.exports = modelCourse;

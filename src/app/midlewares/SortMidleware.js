@@ -8,7 +8,7 @@ module.exports = function SortMidleware (req, res, next){
     }
 
     if(req.query.hasOwnProperty('_sort')){
-        console.log('-- midlewares --> sort --');
+        console.log('-- SortMidleware --> sort --');
         // res.locals._sort.enabled = true;
         // res.locals._sort.column = req.query.column;
         // res.locals._sort.type = req.query.type;

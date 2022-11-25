@@ -1,6 +1,10 @@
 <form class='mt-4' name="container-form" method="POST" action="/courses/handle-form">
     <h3>Khóa Học Của Tôi</h3>
-    <a href='/me/trash/courses/'>Thùng Rác ({{deletedCount}})</a>
+    <a href='/me/trash/courses/'>
+        Thùng Rác ({{deletedCount}}) 
+    </a>
+        {{!-- list: {{courses.length}} - page: {{currPage}} - 
+        so trang: {{numPages}} - sumlist: {{countAllCourse}} --}}        
     <div class="mt-4">
         <div class="form-check d-flex align-items-center pl-2">            
             <div class="col-auto">
@@ -18,13 +22,28 @@
             </div>
         </div>
     </div>
-    {{_sort.column}}
-    {{_thunghiemUser}}
+    {{!-- {{_sort.column}}     --}}
+    {{!-- paginate --}}
+    {{!-- {{log 'currPage:' currPage 'nè'}} --}}
+    <div class="mt-4 mx-auto">
+        Courses page:
+        <nav aria-label="Page navigation example">
+        <ul class="pagination ">
+            <li class="page-item"><a class="page-link" href="/me/stored/courses2">Đầu trang</a></li>            
+            {{!-- loop for pages --}}
+            {{!-- {{{eachPage numPages }}} --}}
+            {{{eachPaginate numPages}}}
+            <li class="page-item"><a class="page-link" href="/me/stored/courses2/{{numPages}}">Cuối trang</a></li>
+        </ul>           
+        </nav>
+    </div>
+    {{!-- {{/eachPage}} --}}
+    
     <table class='table mt-4'>
         <thead>
             <tr>                
                 <th scope='col'>#
-                    {{{sortable 'iid' _sort}}} 
+                    {{!-- {{{sortable 'iid' _sort}}}  --}}
                 </th>
                 <th scope='col'>Tên Khóa Học
                     {{!-- helper trong index.js --}}
@@ -32,19 +51,23 @@
                     {{{sortable 'name' _sort}}} 
                     
                 </th>
-                <th scope='col'>Trình Độ {{{sortable 'level' _sort}}} </th>
-                <th scope='col'>Thời Gian Tạo {{{sortable 'createdAt' _sort}}} </th>
-                <th scope='col'>#</th>
+                <th scope='col'>Trình Độ 
+                    {{!-- {{{sortable 'level' _sort}}}  --}}
+                </th>
+                <th scope='col'>Thời Gian Tạo 
+                    {{!-- {{{sortable 'createdAt' _sort}}}  --}}
+                </th>
+                <th scope='col'>Chức Năng</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody>            
             {{#each courses}}
                 <tr>
                     <th scope='row'>
                         <div class="col-auto">
                             <input type="checkbox" class="form-check-input" value="{{this._id}}" name="courseIds[]">
-                            {{!-- {{sum @index 1}} --}}
-                            {{this.iid}}
+                            {{sum @index 1}}
+                            {{!-- {{this.iid}} --}}
                         </div>
                     </th>                    
                     <td><a href='/courses/{{this.slug}}'>{{this.name}}</a></td>
@@ -71,6 +94,16 @@
             {{/each}}
         </tbody>
     </table>
+    Courses page 2: 
+    <nav aria-label="Page navigation example" class="align-center">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="/me/stored/courses2">Đầu trang</a></li>            
+            {{!-- loop for pages --}}
+            {{{eachPage numPages }}}
+            
+            <li class="page-item"><a class="page-link" href="/me/stored/courses2/{{numPages}}">Cuối trang</a></li>
+        </ul>           
+    </nav>
 </form>
 {{! Confirm delete course }}
 <div class='modal' tabindex='-1' role='dialog' id='delete-course-modal'>
