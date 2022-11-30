@@ -66,7 +66,7 @@ class MeController {
     }
 
     storedCoursesPage(req, res, next) {        
-        let perPage = 5; // 5sp/trang
+        let perPage = 2; // 5sp/trang
         let currPage = req.params.page || 1;
         // console.log('--storedCoursesPage page:', perPage, currPage);
         

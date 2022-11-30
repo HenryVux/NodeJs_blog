@@ -4,6 +4,8 @@ const express = require('express');
 const { create } = require('express-handlebars');
 // import midlewares
 const SortMidleware = require('./app/midlewares/SortMidleware');
+// const LoggerMidleware = require('./app/midlewares/LoggerMidleware');
+const myMidleware = require('./app/midlewares/myMidleware');
 
 // hổ trợ PUT update form
 const methodOverride = require('method-override');
@@ -11,6 +13,7 @@ const methodOverride = require('method-override');
 const route = require('./routes');
 // nạp connect database
 const db = require('./config/db');
+// const { log } = require('console');
 db.connect(); // db connect
 
 const app = express();
@@ -27,87 +30,21 @@ app.use(
 );
 // override with POST having ?_method=PUT
 app.use(methodOverride('_method'));
+
 // custom midlewares
 app.use(SortMidleware);
+// app.use(myMidleware({option1: '1', option2: '2'}));
+
 // json
 app.use(express.json());
 
 // HTTP logger
 // app.use(morgan('combined'));
 
-//template engine
+// template engine
 const hbs = create({
     extname: '.hbs',
-    helpers: {        
-        sum: (a, b) => (a + b),
-        // toancong: (x, y) => x + y,
-        // sortable: (field, sort, demoUser = () => {}) => {
-        sortable: (field, sort) => {
-            // console.log('--- sortable locals user ---');
-            const sortType = field === sort.column ? sort.type : 'default';
-            const icons = {
-                default: 'oi oi-elevator',
-                asc: 'oi oi-sort-ascending',
-                desc: 'oi oi-sort-descending'
-            };            
-            const types = {
-                default: 'desc',
-                desc:'asc',
-                asc:'desc'
-            }
-            const icon = icons[sortType];
-            const type = types[sortType];
-
-            return `<a href="?_sort&column=${field}&type=${type}">
-                        <span class="${icon}"></span>
-                    </a>`;
-        },
-        // comparision conditions
-        ifCond: (op1, operator, op2, options) => {
-            var result = false;
-            switch(operator) {
-              case '===':
-                result = op1 == op2; 
-                break;
-              case '!==':
-                result = op1 != op2;
-                break;
-              case '<=':
-                result = op1 <= op2;
-                break;
-              case '>=':
-                result = op1 >= op2;
-                break;
-              case '||':
-                result = op1 || op2;
-                break;
-              case '&&':
-                result = op1 && op2;
-                break;
-            }
-            // console.log('---operator:',operator);
-            return result ? options.fn(this) : options.inverse(this);
-        },
-        // --- end ---
-        eachPage: (number) => {            
-            let tagA ="";
-            for (let i = 1; i <= number; i++) {             
-                // console.log('so =', i);
-                tagA = tagA+`<li class="page-item"><a class="page-link" href="/me/stored/courses2/${i}"><span class="">${i}</span></a></li>`;
-            }            
-            return tagA;
-        },
-
-        eachPaginate: (number) => {            
-            let tagA ="";
-            for (let i = 1; i <= number; i++) {             
-                // console.log('so =', i);
-                tagA = tagA+`<li class="page-item"><a class="page-link" href="/me/stored/courses/${i}"><span class="">${i}</span></a></li>`;
-            }            
-            return tagA;
-        },
-
-    },
+    helpers: require('./util/hbsHelper'),
 });
 app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
